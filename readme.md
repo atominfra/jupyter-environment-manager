@@ -99,12 +99,6 @@ To list all available environments, run:
 ./colab.sh list_envs
 ```
 
-**Example:**
-
-```bash
-./colab.sh list_envs
-```
-
 This will display all environments created using this script.
 
 ## Requirements
