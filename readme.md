@@ -107,11 +107,6 @@ To list all available environments, run:
 
 This will display all environments created using this script.
 
-## Requirements
-
-- Docker must be installed and running on your machine.
-- Docker Compose should also be installed.
-
 ## Notes
 
 - Ensure that the project names conform to Docker Compose service name standards:
