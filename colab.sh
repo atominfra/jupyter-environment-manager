@@ -25,17 +25,28 @@ function check_docker_compose_file() {
     fi
 }
 
-# Helper function to run Docker Compose commands
+# Helper function to run Docker Compose commands with permission handling
 function run_docker_compose() {
     local project_name=$1
     local action=$2
 
-    docker-compose -f "$project_name/docker-compose.yaml" $action
+    # Try running a simple Docker command to check for permission
+    if ! docker ps >/dev/null 2>&1; then
+        echo "You might not have permission to run Docker commands without sudo."
+        echo "Attempting to run with sudo..."
+        SUDO="sudo"  # Use sudo if Docker command fails
+    else
+        SUDO=""  # No sudo needed
+    fi
+
+    # Attempt to run the docker-compose command
+    $SUDO docker-compose -f "$project_name/docker-compose.yaml" $action
     if [ $? -ne 0 ]; then
         echo "Error: Failed to execute 'docker-compose $action' for project '$project_name'."
         return 1
     fi
 }
+
 
 # Function to check if a directory is a valid colab environment
 function is_valid_env() {
