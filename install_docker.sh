@@ -50,6 +50,12 @@ install_docker_and_compose() {
         sudo systemctl enable docker
         sudo systemctl start docker
 
+        # Add the current user to the Docker group
+        sudo usermod -aG docker "$USER"
+        
+        # Reflect the changes in the current shell
+        newgrp docker
+        
         echo "Docker installed successfully for Debian/Ubuntu."
     }
 
@@ -73,6 +79,12 @@ install_docker_and_compose() {
         sudo systemctl enable docker
         sudo systemctl start docker
 
+        # Add the current user to the Docker group
+        sudo usermod -aG docker "$USER"
+        
+        # Reflect the changes in the current shell
+        newgrp docker
+        
         echo "Docker installed successfully for Fedora/CentOS."
     }
 
