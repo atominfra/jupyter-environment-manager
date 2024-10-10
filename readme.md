@@ -3,7 +3,7 @@
 
 This script provides a command-line interface for managing Jupyter environments using Docker. You can create, start, stop, delete, export, and import environments with ease.
 
-## Commands
+## Instructions
 
 ### Create an Environment
 
@@ -17,6 +17,14 @@ To create a new environment, use the following command:
 
 ```bash
 ./colab.sh create_env myenvironment
+```
+
+### Access an Environment
+
+To access Jupyter Notebook, open a web browser and go to:
+
+```
+http://localhost:8888
 ```
 
 ### Delete an Environment
