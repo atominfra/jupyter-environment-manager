@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source install_docker.sh
+
 # Helper function to validate project name
 function validate_project_name() {
     local project_name=$1
