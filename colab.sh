@@ -2,6 +2,15 @@
 
 source install_docker.sh
 
+# Check if the Docker network called "colab" exists
+if ! docker network ls | grep -q 'colab'; then
+    # Create the Docker network if it does not exist
+    docker network create colab
+    echo "Docker network 'colab' created."
+else
+    echo "Docker network 'colab' already exists."
+fi
+
 # Define projects directory
 PROJECTS_DIR="$HOME/.jupyter-project-manager/projects"
 
