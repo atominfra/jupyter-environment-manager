@@ -28,6 +28,18 @@ function check_docker_compose_file() {
     fi
 }
 
+function run_docker() {
+    if ! docker ps >/dev/null 2>&1; then
+        echo "You might not have permission to run Docker commands without sudo."
+        echo "Attempting to run with sudo..."
+        SUDO="sudo"  # Use sudo if Docker command fails
+    else
+        SUDO=""  # No sudo needed
+    fi
+
+    $SUDO docker "$@"     
+}
+
 # Helper function to run Docker Compose commands with permission handling
 function run_docker_compose() {
     local project_name=$1
@@ -50,22 +62,10 @@ function run_docker_compose() {
     fi
 }
 
-# Function to check if a directory is a valid colab environment
-function is_valid_env() {
-    local dir=$1
-    if [ -f "$dir/.colab_env" ]; then
-        return 0  # True: This is a valid colab environment
-    else
-        return 1  # False: This is not a valid colab environment
-    fi
-}
-
 # Function to list all environments
 function list_envs() {
     echo "Available environments:"
-    for dir in "$PROJECTS_DIR"/*/ ; do
-        [ -d "$dir" ] && is_valid_env "$dir" && echo "${dir%/}"
-    done
+    run_docker ps --filter "label=com.docker.compose.project.namespace=colab" --format "{{.Label \"com.docker.compose.project\"}}"
 }
 
 # Function to create an environment
@@ -99,9 +99,6 @@ function create_env() {
     cp jupyter_notebook_config.py "$PROJECTS_DIR/$project_name"
     cp entrypoint.sh "$PROJECTS_DIR/$project_name" || { echo "Error: Failed to create files for project '$project_name'."; return 1; }
 
-    # Create the environment identifier file
-    touch "$PROJECTS_DIR/$project_name/.colab_env"
-
     # Start the Docker environment
     run_docker_compose "$project_name" "up -d" || return 1
 
@@ -120,9 +117,6 @@ function delete_env() {
 
     # Validate project name
     validate_project_name "$project_name" || return 1
-
-    # Check if this is a valid environment
-    is_valid_env "$PROJECTS_DIR/$project_name" || { echo "Error: '$project_name' is not a valid environment."; return 1; }
 
     # Stop the Docker environment and remove the directory
     run_docker_compose "$project_name" "down" || return 1
@@ -144,9 +138,6 @@ function start_env() {
     # Validate project name
     validate_project_name "$project_name" || return 1
 
-    # Check if this is a valid environment
-    is_valid_env "$PROJECTS_DIR/$project_name" || { echo "Error: '$project_name' is not a valid environment."; return 1; }
-
     # Start the Docker environment
     run_docker_compose "$project_name" "up -d" || return 1
 
@@ -166,9 +157,6 @@ function stop_env() {
     # Validate project name
     validate_project_name "$project_name" || return 1
 
-    # Check if this is a valid environment
-    is_valid_env "$PROJECTS_DIR/$project_name" || { echo "Error: '$project_name' is not a valid environment."; return 1; }
-
     # Stop the Docker environment
     run_docker_compose "$project_name" "down" || return 1
 
@@ -187,9 +175,6 @@ function export_env() {
 
     # Validate project name
     validate_project_name "$project_name" || return 1
-
-    # Check if this is a valid environment
-    is_valid_env "$PROJECTS_DIR/$project_name" || { echo "Error: '$project_name' is not a valid environment."; return 1; }
 
     # Create a compressed archive of the environment
     tar -cJf "${project_name}.tar.xz" "$PROJECTS_DIR/$project_name" || { echo "Error: Failed to compress environment '$project_name'."; return 1; }

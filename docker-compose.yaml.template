@@ -3,5 +3,7 @@ services:
     build: .
     ports:
       - "8888:8888"
+    labels:
+      - "com.docker.compose.project.namespace=colab"
     volumes:
       - ./environment:/opt/venv
