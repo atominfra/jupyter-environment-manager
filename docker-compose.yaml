@@ -1,0 +1,15 @@
+services:
+  caddy:
+    image: caddy:2.8.4
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./:/etc/caddy/projects
+    restart: unless-stopped
+    networks:
+      - colab
+
+networks:
+  colab:
+    external: true

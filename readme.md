@@ -24,7 +24,7 @@ To create a new environment, use the following command:
 To access Jupyter Notebook, open a web browser and go to:
 
 ```
-http://localhost:8888
+http://<env-name>.jupyter.localdev.me
 ```
 
 ### Delete an Environment
