@@ -3,7 +3,7 @@
 source install_docker.sh
 
 # Define projects directory
-PROJECTS_DIR="projects"
+PROJECTS_DIR="$HOME/.jupyter-project-manager/projects"
 
 # Helper function to validate project name
 function validate_project_name() {
@@ -173,13 +173,20 @@ function export_env() {
         return 1
     fi
 
-    # Validate project name
+    # Validate project name (you can define your own logic in this function)
     validate_project_name "$project_name" || return 1
 
+    # Check if the project folder exists and is a directory
+    if [ ! -d "$PROJECTS_DIR/$project_name" ]; then
+        echo "Error: Project folder '$PROJECTS_DIR/$project_name' does not exist or is not a directory."
+        return 1
+    fi
+
     # Create a compressed archive of the environment
-    tar -cJf "${project_name}.tar.xz" "$PROJECTS_DIR/$project_name" || { echo "Error: Failed to compress environment '$project_name'."; return 1; }
+    tar -cJf "${project_name}.tar.xz" -C "$PROJECTS_DIR" "$project_name" || { echo "Error: Failed to compress environment '$project_name'."; return 1; }
     echo "Environment '$project_name' exported successfully to '${project_name}.tar.xz'."
 }
+
 
 # Function to import an environment
 function import_env() {
