@@ -27,6 +27,12 @@ To access Jupyter Notebook, open a web browser and go to:
 http://<env-name>.jupyter.localdev.me
 ```
 
+**Example:**
+
+```
+http://myenvironment.jupyter.localdev.me
+```
+
 ### Delete an Environment
 
 To delete an existing environment, use this command:
