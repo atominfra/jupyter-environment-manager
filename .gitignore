@@ -1,5 +1,5 @@
 # Ignore all tar.xz files
 *.tar.xz
 
-# Ignore all folders in git
-*/
+# Ignore the projects directory in git
+projects/   
